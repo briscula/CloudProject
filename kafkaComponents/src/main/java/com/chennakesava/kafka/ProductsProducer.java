@@ -11,7 +11,7 @@ import kafka.producer.ProducerConfig;
 
 public class ProductsProducer {
 	public static void main(String[] args) {
-		long events = Long.parseLong(args[0]);
+		long events = Long.parseLong("200");
 		Random rnd = new Random();
 		try {
 			Properties props = new Properties();
