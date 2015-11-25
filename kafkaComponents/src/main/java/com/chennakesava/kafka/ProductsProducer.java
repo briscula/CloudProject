@@ -16,7 +16,7 @@ public class ProductsProducer {
 		try {
 			Properties props = new Properties();
 			//set broker address
-			props.put("metadata.broker.list", "104.196.22.222:9092");
+			props.put("metadata.broker.list", "104.196.53.159:9092,104.196.22.222:9092");
 	        props.put("serializer.class", "kafka.serializer.StringEncoder");
 	        //partitioner class is set default to serializer class
 	        //props.put("partitioner.class", "example.producer.SimplePartitioner");
