@@ -13,14 +13,12 @@ import kafka.producer.ProducerConfig;
 
 import java.io.FileReader;
 import java.util.Iterator;
- 
-//import org.json.simple.JSONArray;
-//import org.json.simple.parser.JSONParser;
 
-public class ProductsProducer {
+public class DummyProductBuilder {
 	public static void main(String[] args) {
+		long events = Long.parseLong(args[0]);
 		Random rnd = new Random();
-		String filePath = args[0];
+		//String filePath = args[0];
 		try {
 			Properties props = new Properties();
 			//set broker address
@@ -33,26 +31,37 @@ public class ProductsProducer {
 	        ProducerConfig config = new ProducerConfig(props);
 	 
 	        Producer<String, String> producer = new Producer<String, String>(config);
-	        int events = 0;
-	        //read a file or csv file here and send parsed text to kafka
-	        JSONParser parser = new JSONParser();
-	        Object obj = parser.parse(new FileReader(filePath));
-	        JSONArray jsonArray = (JSONArray) obj;
-	        events += jsonArray.size();
-	        Iterator<JSONObject> itr = jsonArray.iterator();
-	        while(itr.hasNext()) {
-	        	JSONObject item = itr.next();
-	        	String topic = "test";
-	        	String msg = item.toString();
-	        	KeyedMessage<String, String> data = new KeyedMessage<String, String>(topic,msg);
-	        	System.out.println("Sending:"+msg);
-	        	producer.send(data);
+	        for (long nEvents = 0; nEvents < events; nEvents++) { 
+	               long runtime = new Date().getTime();  
+	               String productName = "sampleProduct_name_" + rnd.nextInt(255);
+	               String price = String.valueOf(rnd.nextInt(1000));
+	               String topic = "test";
+	               String msg = runtime +","+productName+ "," + price; 
+	               System.out.println("Sending msg: "+msg);
+	               KeyedMessage<String, String> data = new KeyedMessage<String, String>(topic,convertLineToJson(msg));
+	               producer.send(data);
 	        }
-	        System.out.println("Pushed:"+events+" events.");
+	        
+	        System.out.println("Sent events:"+events);
 	        producer.close();
 		} catch (Exception e) {
 			System.err.println("Caught exception : "+e.getMessage());
 		}
 				
 	}
+	
+	public static String convertLineToJson(final String line) {
+		try {
+			String[] arr = line.split(",");
+			JSONObject record = new JSONObject();
+			record.put("time_stamp",arr[0]);
+			record.put("product_name", arr[1]);
+			record.put("price",arr[2]);
+			return record.toString();
+		} catch(Exception e) {
+			System.err.println("Caught exception: "+e.getMessage());
+			return null;
+		}
+	}
+
 }
