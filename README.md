@@ -15,3 +15,5 @@ Main Objectives of the project are
 4. Reading the data from Topics using Kafka Consumers and indexing the data into Elasticsearch.
 
 5. Showing the indexed data in Kibana from Elasticsearch in terms of user defined Dashboards
+
+Details of each component and their features are mentioned in respective their respective readme files.
