@@ -1,7 +1,6 @@
 package com.chennakesava.kafka;
 
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -19,11 +18,13 @@ public class ProductsParserPush {
 	/**
 	 * @param args
 	 * input json path -args[0]
-	 * 
+	 * topic name    	-args[1]
 	 */
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		JSONParser parser = new JSONParser();
 		System.out.println("Taking args 1 as filepath and 2 as topic name");
+		
 		try {
 			String filePath = args[0];
 			String topic = args[1];
@@ -80,7 +81,7 @@ public class ProductsParserPush {
 					finalTitle = strTitle.replace("[", "")
 							.replace("]", "").replace("\"", "");
 
-					Object asin = (Object) jsonObject.get("Asin");
+					Object asin = (Object) jsonObject.get("ASIN");
 					String strAsin = null;
 					if(asin == null)
 						strAsin = "";
@@ -122,7 +123,7 @@ public class ProductsParserPush {
 					finalTitle = strTitle.replace("[", "")
 							.replace("]", "").replace("\"", "");
 
-					Object asin = (Object) jsonObject.get("Asin");
+					Object asin = (Object) jsonObject.get("ASIN");
 					String strAsin = asin.toString();
 					finalAsin = strAsin.replace("[", "")
 							.replace("]", "").replace("\"", "");
@@ -141,12 +142,12 @@ public class ProductsParserPush {
 						String[] finalCategoryArray = finalCategory.split("\"");
 						finalCategory = finalCategoryArray[1].replace(" ", "");
 					}
-
-					
 				}
+				
 				if (!(finalTitle.equals("") || finalPrice.equals(""))) {
+					System.out.println(finalAsin+"::"+asinSet.contains(finalAsin));
 					if (!asinSet.contains(finalAsin)) {
-
+						System.out.println(finalTitle +" :: "+ finalPrice +":: "+finalAsin);
 						JSONObject tempJSONObject = new JSONObject();
 						tempJSONObject.put("Company", finalCompany);
 						tempJSONObject.put("ASIN", finalAsin);
@@ -161,12 +162,13 @@ public class ProductsParserPush {
 			        	//pushing the json message to kafka
 			        	producer.send(data);
 			        	System.out.println("Sending:"+msg);
-			        	//count++;
+			        	count++;
 			        	//if(count > 10) break;
 						asinSet.add(finalAsin);
 					}
 				}
 			}
+			System.out.println("Pushed:"+count+" items");
 			producer.close();
 
 		} catch (Exception e) {
