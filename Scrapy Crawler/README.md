@@ -1,6 +1,6 @@
 #Scrapy Crawler
 
-We used scrapy for data extraction from targetted websites. Scrapy has been developed in Python and is very simple, fast, powerful and robust cross platform software.
+We used scrapy for data extraction from targetted websites. Scrapy is developed in Python and is very simple, fast, powerful and robust cross platform software.
 
 We seed the URLs to scrapy, and data is crawled from the required websites.
 
